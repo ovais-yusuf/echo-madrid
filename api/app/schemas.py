@@ -44,6 +44,20 @@ class MatchRead(BaseModel):
     matchday: int | None
 
 
+class StandingRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    position: int
+    team: TeamRef
+    played: int
+    won: int
+    drawn: int
+    lost: int
+    points: int
+    goals_for: int
+    goals_against: int
+
+
 class AskRequest(BaseModel):
     question: str = Field(min_length=1)
 

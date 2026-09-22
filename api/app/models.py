@@ -141,6 +141,11 @@ class Match(Base):
 
 class Standing(Base):
     __tablename__ = "standing"
+    __table_args__ = (
+        UniqueConstraint(
+            "season_id", "team_id", name="uq_standing_season_team"
+        ),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     season_id: Mapped[int] = mapped_column(ForeignKey("season.id"), nullable=False)

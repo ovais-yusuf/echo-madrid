@@ -97,6 +97,9 @@ class FootballDataClient:
     def get_team_matches(self, team_id: int = REAL_MADRID_TEAM_ID) -> dict[str, Any]:
         return self.get(f"/teams/{team_id}/matches")
 
+    def get_competition_standings(self, competition_code: str = "PD") -> dict[str, Any]:
+        return self.get(f"/competitions/{competition_code}/standings")
+
 
 def parse_utc_datetime(value: str) -> datetime:
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
