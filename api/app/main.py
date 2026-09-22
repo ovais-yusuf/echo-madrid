@@ -1,4 +1,7 @@
+from pathlib import Path
+
 from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi.responses import FileResponse
 from openai import OpenAIError
 from sqlalchemy.orm import Session
 
@@ -13,7 +16,14 @@ from app.queries import (
 )
 from app.schemas import AskRequest, AskResponse, CompetitionRead, MatchRead, TeamRead
 
+STATIC_DIR = Path(__file__).resolve().parent / "static"
+
 app = FastAPI(title="Echo Madrid API")
+
+
+@app.get("/", include_in_schema=False)
+def ask_echo_page() -> FileResponse:
+    return FileResponse(STATIC_DIR / "index.html")
 
 
 @app.get("/teams", response_model=list[TeamRead])

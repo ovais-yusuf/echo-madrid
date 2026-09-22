@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ask Echo</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #10141c;
+        --card: #1a2130;
+        --text: #f4f1ea;
+        --muted: #a8b0bf;
+        --accent: #c9a227;
+        --error: #e07a6a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Georgia, "Times New Roman", serif;
+        background: radial-gradient(circle at top, #1c2638 0%, var(--bg) 55%);
+        color: var(--text);
+        display: flex;
+        justify-content: center;
+        padding: 3rem 1.25rem;
+      }
+
+      main {
+        width: min(40rem, 100%);
+      }
+
+      h1 {
+        margin: 0 0 0.35rem;
+        font-size: 2.25rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+
+      p.lede {
+        margin: 0 0 1.75rem;
+        color: var(--muted);
+        font-family: system-ui, sans-serif;
+        font-size: 0.95rem;
+      }
+
+      form {
+        display: flex;
+        gap: 0.6rem;
+      }
+
+      input[type="text"] {
+        flex: 1;
+        border: 1px solid #334056;
+        background: var(--card);
+        color: var(--text);
+        border-radius: 0.4rem;
+        padding: 0.75rem 0.9rem;
+        font: inherit;
+        font-family: system-ui, sans-serif;
+        font-size: 1rem;
+      }
+
+      input[type="text"]:focus {
+        outline: 2px solid var(--accent);
+        border-color: transparent;
+      }
+
+      button {
+        border: 0;
+        border-radius: 0.4rem;
+        background: var(--accent);
+        color: #16130a;
+        font-family: system-ui, sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.75rem 1.15rem;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      #result {
+        margin-top: 1.5rem;
+        min-height: 6rem;
+        background: var(--card);
+        border: 1px solid #334056;
+        border-radius: 0.5rem;
+        padding: 1.1rem 1.2rem;
+        font-family: system-ui, sans-serif;
+        font-size: 1.05rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+      }
+
+      #result.placeholder,
+      #result.loading {
+        color: var(--muted);
+      }
+
+      #result.error {
+        color: var(--error);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Ask Echo</h1>
+      <p class="lede">Questions about Real Madrid matches and the La Liga table.</p>
+      <form id="ask-form">
+        <input
+          id="question"
+          type="text"
+          name="question"
+          placeholder="Where is Real Madrid in the table?"
+          autocomplete="off"
+          required
+        />
+        <button type="submit" id="ask-button">Ask</button>
+      </form>
+      <div id="result" class="placeholder" role="status">The answer will appear here.</div>
+    </main>
+    <script>
+      const form = document.getElementById("ask-form");
+      const input = document.getElementById("question");
+      const button = document.getElementById("ask-button");
+      const result = document.getElementById("result");
+
+      function show(text, className) {
+        result.className = className || "";
+        result.textContent = text;
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const question = input.value.trim();
+        if (!question) {
+          show("Enter a question first.", "error");
+          return;
+        }
+
+        button.disabled = true;
+        show("Asking Echo…", "loading");
+
+        try {
+          const response = await fetch("/ask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question }),
+          });
+
+          let payload = {};
+          try {
+            payload = await response.json();
+          } catch {
+            payload = {};
+          }
+
+          if (!response.ok) {
+            const detail = payload.detail;
+            const message =
+              typeof detail === "string"
+                ? detail
+                : "Ask Echo could not answer that right now.";
+            show(message, "error");
+            return;
+          }
+
+          show(payload.answer || "No answer returned.");
+        } catch {
+          show("Could not reach Ask Echo. Check your connection and try again.", "error");
+        } finally {
+          button.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
