@@ -70,7 +70,7 @@
         border-color: transparent;
       }
 
-      button {
+      #ask-button {
         border: 0;
         border-radius: 0.4rem;
         background: var(--accent);
@@ -82,9 +82,44 @@
         cursor: pointer;
       }
 
-      button:disabled {
+      #ask-button:disabled,
+      .chip:disabled {
         opacity: 0.6;
         cursor: wait;
+      }
+
+      .examples {
+        margin: 1rem 0 0;
+      }
+
+      .examples-label {
+        margin: 0 0 0.55rem;
+        color: var(--muted);
+        font-family: system-ui, sans-serif;
+        font-size: 0.8rem;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+      }
+
+      .chip {
+        border: 1px solid #334056;
+        background: transparent;
+        color: var(--muted);
+        border-radius: 999px;
+        font-family: system-ui, sans-serif;
+        font-size: 0.8rem;
+        line-height: 1.3;
+        padding: 0.35rem 0.7rem;
+        cursor: pointer;
+      }
+
+      .chip:hover:not(:disabled) {
+        border-color: #4a5870;
+        color: var(--text);
       }
 
       #result {
@@ -125,18 +160,47 @@
         />
         <button type="submit" id="ask-button">Ask</button>
       </form>
+      <div class="examples">
+        <p class="examples-label">Try asking:</p>
+        <div class="chips">
+          <button type="button" class="chip">
+            Where is Real Madrid in the La Liga table?
+          </button>
+          <button type="button" class="chip">
+            What was Real Madrid's last result?
+          </button>
+          <button type="button" class="chip">
+            How did Real Madrid do in their last 5 matches?
+          </button>
+        </div>
+      </div>
       <div id="result" class="placeholder" role="status">The answer will appear here.</div>
     </main>
     <script>
       const form = document.getElementById("ask-form");
       const input = document.getElementById("question");
       const button = document.getElementById("ask-button");
+      const chips = document.querySelectorAll(".chip");
       const result = document.getElementById("result");
 
       function show(text, className) {
         result.className = className || "";
         result.textContent = text;
       }
+
+      function setBusy(busy) {
+        button.disabled = busy;
+        chips.forEach((chip) => {
+          chip.disabled = busy;
+        });
+      }
+
+      chips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          input.value = chip.textContent.trim();
+          form.requestSubmit();
+        });
+      });
 
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -146,7 +210,7 @@
           return;
         }
 
-        button.disabled = true;
+        setBusy(true);
         show("Asking Echo…", "loading");
 
         try {
@@ -177,7 +241,7 @@
         } catch {
           show("Could not reach Ask Echo. Check your connection and try again.", "error");
         } finally {
-          button.disabled = false;
+          setBusy(false);
         }
       });
     </script>
