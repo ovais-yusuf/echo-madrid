@@ -40,8 +40,10 @@ class Competition(Base):
 
 class Season(Base):
     __tablename__ = "season"
+    __table_args__ = (UniqueConstraint("external_id", name="uq_season_external_id"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    external_id: Mapped[int] = mapped_column(Integer, nullable=False)
     competition_id: Mapped[int] = mapped_column(
         ForeignKey("competition.id"), nullable=False
     )
