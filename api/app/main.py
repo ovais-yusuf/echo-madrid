@@ -2,6 +2,7 @@ from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from openai import OpenAIError
 from sqlalchemy.orm import Session
 
@@ -73,3 +74,6 @@ def ask(body: AskRequest, db: Session = Depends(get_db)) -> AskResponse:
     except OpenAIError as exc:
         raise HTTPException(status_code=502, detail="Ask Echo failed to reach OpenAI") from exc
     return AskResponse(answer=answer, tool_calls=tool_calls)
+
+
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")

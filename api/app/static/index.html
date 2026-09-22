@@ -3,15 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Ask Echo</title>
+    <title>Ask Echo — Echo Madrid</title>
     <style>
       :root {
         color-scheme: dark;
-        --bg: #10141c;
-        --card: #1a2130;
-        --text: #f4f1ea;
-        --muted: #a8b0bf;
+        --bg: #0c1018;
+        --card: #161d2b;
+        --line: #2c3648;
+        --text: #f7f4ee;
+        --muted: #9aa3b5;
         --accent: #c9a227;
+        --accent-hover: #dcb54a;
         --error: #e07a6a;
       }
 
@@ -22,47 +24,77 @@
       body {
         margin: 0;
         min-height: 100vh;
-        font-family: Georgia, "Times New Roman", serif;
-        background: radial-gradient(circle at top, #1c2638 0%, var(--bg) 55%);
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(ellipse at top, #1a2436 0%, var(--bg) 52%);
         color: var(--text);
-        display: flex;
-        justify-content: center;
-        padding: 3rem 1.25rem;
       }
 
-      main {
+      .page {
+        min-height: 100vh;
         width: min(40rem, 100%);
+        margin: 0 auto;
+        padding: 2.25rem 1.25rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        padding-bottom: 1.15rem;
+        margin-bottom: 1.35rem;
+        border-bottom: 1px solid var(--line);
+      }
+
+      header img {
+        height: 52px;
+        width: 52px;
+        object-fit: contain;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .brand {
+        margin: 0 0 0.15rem;
+        color: var(--accent);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
       }
 
       h1 {
-        margin: 0 0 0.35rem;
-        font-size: 2.25rem;
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.85rem;
         font-weight: 600;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.01em;
+        line-height: 1.15;
       }
 
       p.lede {
-        margin: 0 0 1.75rem;
+        margin: 0 0 1.35rem;
         color: var(--muted);
-        font-family: system-ui, sans-serif;
-        font-size: 0.95rem;
+        font-size: 0.92rem;
+        line-height: 1.45;
       }
 
       form {
         display: flex;
-        gap: 0.6rem;
+        gap: 0.55rem;
       }
 
       input[type="text"] {
         flex: 1;
-        border: 1px solid #334056;
+        border: 1px solid var(--line);
         background: var(--card);
         color: var(--text);
-        border-radius: 0.4rem;
-        padding: 0.75rem 0.9rem;
+        border-radius: 0.45rem;
+        padding: 0.8rem 0.95rem;
         font: inherit;
-        font-family: system-ui, sans-serif;
-        font-size: 1rem;
+        font-size: 0.98rem;
       }
 
       input[type="text"]:focus {
@@ -72,66 +104,70 @@
 
       #ask-button {
         border: 0;
-        border-radius: 0.4rem;
+        border-radius: 0.45rem;
         background: var(--accent);
         color: #16130a;
-        font-family: system-ui, sans-serif;
-        font-size: 0.95rem;
-        font-weight: 600;
-        padding: 0.75rem 1.15rem;
+        font: inherit;
+        font-size: 0.92rem;
+        font-weight: 650;
+        letter-spacing: 0.02em;
+        padding: 0.8rem 1.2rem;
         cursor: pointer;
+      }
+
+      #ask-button:hover:not(:disabled) {
+        background: var(--accent-hover);
       }
 
       #ask-button:disabled,
       .chip:disabled {
-        opacity: 0.6;
+        opacity: 0.55;
         cursor: wait;
       }
 
       .examples {
-        margin: 1rem 0 0;
+        margin: 0.95rem 0 0;
       }
 
       .examples-label {
-        margin: 0 0 0.55rem;
+        margin: 0 0 0.5rem;
         color: var(--muted);
-        font-family: system-ui, sans-serif;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
       }
 
       .chips {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.45rem;
+        gap: 0.4rem;
       }
 
       .chip {
-        border: 1px solid #334056;
+        border: 1px solid var(--line);
         background: transparent;
         color: var(--muted);
         border-radius: 999px;
-        font-family: system-ui, sans-serif;
-        font-size: 0.8rem;
+        font: inherit;
+        font-size: 0.78rem;
         line-height: 1.3;
-        padding: 0.35rem 0.7rem;
+        padding: 0.32rem 0.72rem;
         cursor: pointer;
       }
 
       .chip:hover:not(:disabled) {
-        border-color: #4a5870;
+        border-color: var(--accent);
         color: var(--text);
       }
 
       #result {
-        margin-top: 1.5rem;
-        min-height: 6rem;
+        margin-top: 1.35rem;
+        min-height: 6.25rem;
         background: var(--card);
-        border: 1px solid #334056;
-        border-radius: 0.5rem;
-        padding: 1.1rem 1.2rem;
-        font-family: system-ui, sans-serif;
-        font-size: 1.05rem;
-        line-height: 1.5;
+        border: 1px solid var(--line);
+        border-radius: 0.55rem;
+        padding: 1.05rem 1.15rem;
+        font-size: 1rem;
+        line-height: 1.55;
         white-space: pre-wrap;
       }
 
@@ -143,39 +179,60 @@
       #result.error {
         color: var(--error);
       }
+
+      footer {
+        margin-top: auto;
+        padding-top: 2rem;
+        color: var(--muted);
+        font-size: 0.72rem;
+        letter-spacing: 0.01em;
+        line-height: 1.45;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
-    <main>
-      <h1>Ask Echo</h1>
-      <p class="lede">Questions about Real Madrid matches and the La Liga table.</p>
-      <form id="ask-form">
-        <input
-          id="question"
-          type="text"
-          name="question"
-          placeholder="Where is Real Madrid in the table?"
-          autocomplete="off"
-          required
-        />
-        <button type="submit" id="ask-button">Ask</button>
-      </form>
-      <div class="examples">
-        <p class="examples-label">Try asking:</p>
-        <div class="chips">
-          <button type="button" class="chip">
-            Where is Real Madrid in the La Liga table?
-          </button>
-          <button type="button" class="chip">
-            What was Real Madrid's last result?
-          </button>
-          <button type="button" class="chip">
-            How did Real Madrid do in their last 5 matches?
-          </button>
+    <div class="page">
+      <header>
+        <img src="/static/logo.png" alt="Echo Madrid logo" />
+        <div>
+          <p class="brand">Echo Madrid</p>
+          <h1>Ask Echo</h1>
         </div>
-      </div>
-      <div id="result" class="placeholder" role="status">The answer will appear here.</div>
-    </main>
+      </header>
+      <main>
+        <p class="lede">Questions about Real Madrid matches and the La Liga table.</p>
+        <form id="ask-form">
+          <input
+            id="question"
+            type="text"
+            name="question"
+            placeholder="Where is Real Madrid in the table?"
+            autocomplete="off"
+            required
+          />
+          <button type="submit" id="ask-button">Ask</button>
+        </form>
+        <div class="examples">
+          <p class="examples-label">Try asking:</p>
+          <div class="chips">
+            <button type="button" class="chip">
+              Where is Real Madrid in the La Liga table?
+            </button>
+            <button type="button" class="chip">
+              What was Real Madrid's last result?
+            </button>
+            <button type="button" class="chip">
+              How did Real Madrid do in their last 5 matches?
+            </button>
+          </div>
+        </div>
+        <div id="result" class="placeholder" role="status">The answer will appear here.</div>
+      </main>
+      <footer>
+        Echo Madrid — an unofficial fan project. Not affiliated with Real Madrid CF.
+      </footer>
+    </div>
     <script>
       const form = document.getElementById("ask-form");
       const input = document.getElementById("question");
