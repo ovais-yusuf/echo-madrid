@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: echo_madrid_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: echo
+      POSTGRES_PASSWORD: echo_dev_password
+      POSTGRES_DB: echo_madrid
+    ports:
+      - "5432:5432"
+    volumes:
+      - echo_pgdata:/var/lib/postgresql/data
+
+volumes:
+  echo_pgdata:
