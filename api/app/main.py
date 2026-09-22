@@ -1,6 +1,8 @@
 from fastapi import Depends, FastAPI, HTTPException, Query
+from openai import OpenAIError
 from sqlalchemy.orm import Session
 
+from app.ask_echo import ask_echo
 from app.database import get_db
 from app.queries import (
     get_match as fetch_match,
@@ -9,7 +11,7 @@ from app.queries import (
     list_competitions as fetch_competitions,
     list_teams as fetch_teams,
 )
-from app.schemas import CompetitionRead, MatchRead, TeamRead
+from app.schemas import AskRequest, AskResponse, CompetitionRead, MatchRead, TeamRead
 
 app = FastAPI(title="Echo Madrid API")
 
@@ -50,3 +52,14 @@ def get_match(id: int, db: Session = Depends(get_db)) -> MatchRead:
     if match is None:
         raise HTTPException(status_code=404, detail=f"Match {id} not found")
     return match
+
+
+@app.post("/ask", response_model=AskResponse)
+def ask(body: AskRequest, db: Session = Depends(get_db)) -> AskResponse:
+    try:
+        answer, tool_calls = ask_echo(db, body.question)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except OpenAIError as exc:
+        raise HTTPException(status_code=502, detail="Ask Echo failed to reach OpenAI") from exc
+    return AskResponse(answer=answer, tool_calls=tool_calls)

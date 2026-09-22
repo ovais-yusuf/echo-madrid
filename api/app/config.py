@@ -10,6 +10,7 @@ load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 DATABASE_URL_ENV = "DATABASE_URL"
 FOOTBALL_DATA_API_KEY_ENV = "FOOTBALL_DATA_API_KEY"
+OPENAI_API_KEY_ENV = "OPENAI_API_KEY"
 
 
 def _require_env(name: str) -> str:
@@ -29,3 +30,8 @@ def get_database_url() -> str:
 def get_football_data_api_key() -> str:
     """Return the football-data.org API token from the environment."""
     return _require_env(FOOTBALL_DATA_API_KEY_ENV)
+
+
+def get_openai_api_key() -> str:
+    """Return the OpenAI API key from the environment."""
+    return _require_env(OPENAI_API_KEY_ENV)

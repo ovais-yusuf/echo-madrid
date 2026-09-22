@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import Any
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class TeamRef(BaseModel):
@@ -41,3 +42,17 @@ class MatchRead(BaseModel):
     home_score: int | None
     away_score: int | None
     matchday: int | None
+
+
+class AskRequest(BaseModel):
+    question: str = Field(min_length=1)
+
+
+class ToolCallRecord(BaseModel):
+    name: str
+    arguments: dict[str, Any]
+
+
+class AskResponse(BaseModel):
+    answer: str
+    tool_calls: list[ToolCallRecord]
